@@ -34,12 +34,39 @@ function extractAchievement(text, name) {
   };
 }
 
-const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+async function openProfilePage() {
+  const attempts = [
+    { label: "default", args: [] },
+    { label: "http1-fallback", args: ["--disable-http2"] },
+  ];
+  let lastError;
+
+  for (const attempt of attempts) {
+    const browser = await chromium.launch({ headless: true, args: attempt.args });
+    const page = await browser.newPage({
+      viewport: { width: 1280, height: 900 },
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      locale: "en-SG",
+    });
+    await page.setExtraHTTPHeaders({ "accept-language": "en-SG,en;q=0.9" });
+
+    try {
+      await page.goto(sourceUrl, { waitUntil: "domcontentloaded", timeout: 45000 });
+      await page.getByText("Tai Zhi", { exact: true }).waitFor({ state: "visible", timeout: 45000 });
+      return { browser, page };
+    } catch (error) {
+      lastError = error;
+      console.warn(`AIA profile load failed on ${attempt.label}: ${error.message}`);
+      await browser.close();
+    }
+  }
+
+  throw lastError;
+}
+
+const { browser, page } = await openProfilePage();
 
 try {
-  await page.goto(sourceUrl, { waitUntil: "domcontentloaded", timeout: 45000 });
-  await page.getByText("Tai Zhi", { exact: true }).waitFor({ state: "visible", timeout: 45000 });
   const visibleText = await page.locator("body").innerText({ timeout: 10000 });
   const cleanedText = normaliseWhitespace(visibleText);
 
