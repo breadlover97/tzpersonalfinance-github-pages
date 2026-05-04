@@ -175,8 +175,6 @@ async function hydrateAiaProfile() {
     const profile = await response.json();
     setText("[data-aia-name]", profile.name);
     setText("[data-aia-role]", profile.role);
-    setText("[data-aia-organisation]", profile.organisation);
-    setText("[data-aia-fsc]", profile.fscCode);
     setText("[data-aia-synced]", formatSyncDate(profile.syncedAt));
     renderProfileStats(profile.stats);
     renderAchievements(profile.achievements);
