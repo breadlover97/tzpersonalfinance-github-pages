@@ -476,24 +476,28 @@ a {
 
 .profile-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 14px;
+  counter-reset: stat;
 }
 
-.profile-stats div {
+.stat-card {
   position: relative;
-  min-height: 168px;
+  grid-column: span 3;
+  min-height: 178px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 26px;
+  padding: 28px;
   background: var(--white);
   border: 1px solid var(--line);
   box-shadow: 0 16px 46px rgba(8, 24, 47, 0.06);
   overflow: hidden;
+  counter-increment: stat;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-.profile-stats div::before {
+.stat-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -503,26 +507,62 @@ a {
   background: var(--gold);
 }
 
-.profile-stats div:nth-child(3),
-.profile-stats div:nth-child(4),
-.profile-stats div:nth-child(5) {
-  grid-column: span 2;
+.stat-card::after {
+  content: counter(stat, decimal-leading-zero);
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  color: rgba(8, 24, 47, 0.05);
+  font-size: 72px;
+  font-weight: 850;
+  line-height: 1;
 }
 
-.profile-stats div:nth-child(3)::before,
-.profile-stats div:nth-child(4)::before,
-.profile-stats div:nth-child(5)::before {
+.stat-card.is-coverage {
+  grid-column: span 4;
+  min-height: 210px;
+}
+
+.stat-card.is-coverage::before {
   background: #1d6fd8;
 }
 
-.profile-stats strong {
+.stat-card.is-claims::before {
+  background: var(--blue);
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(188, 144, 97, 0.58);
+  box-shadow: 0 22px 64px rgba(8, 24, 47, 0.1);
+}
+
+.stat-card em {
+  position: relative;
+  z-index: 1;
+  color: var(--gold-2);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  position: relative;
+  z-index: 1;
   display: block;
   color: #1d6fd8;
   font-size: clamp(32px, 4.8vw, 58px);
   line-height: 1;
 }
 
-.profile-stats span {
+.stat-card.is-claims strong {
+  color: var(--blue);
+}
+
+.stat-card span {
+  position: relative;
+  z-index: 1;
   display: block;
   margin-top: 28px;
   color: var(--muted);
@@ -534,23 +574,49 @@ a {
 
 .achievement-list {
   display: grid;
-  background: var(--white);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
   margin-top: 16px;
-  border: 1px solid var(--line);
+  background: transparent;
 }
 
 .achievement-list article {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
-  align-items: center;
-  min-height: 82px;
-  padding: 22px 30px;
+  align-content: space-between;
+  gap: 20px;
+  min-height: 178px;
+  padding: 24px;
   background: var(--white);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 46px rgba(8, 24, 47, 0.06);
+  overflow: hidden;
+}
+
+.achievement-list article::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--gold);
+}
+
+.achievement-list article::after {
+  content: "Award";
+  position: absolute;
+  right: 20px;
+  top: 18px;
+  color: rgba(8, 24, 47, 0.06);
+  font-size: 28px;
+  font-weight: 850;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .achievement-list h3 {
+  position: relative;
+  z-index: 1;
+  max-width: 86%;
   margin: 0;
   color: var(--blue);
   font-size: 20px;
@@ -559,14 +625,24 @@ a {
 
 .achievement-list p,
 .achievement-list span {
+  position: relative;
+  z-index: 1;
   margin: 5px 0 0;
   color: var(--muted);
   font-size: 16px;
 }
 
 .achievement-list span {
+  justify-self: start;
   margin: 0;
-  text-align: right;
+  padding: 8px 10px;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 850;
+  text-align: left;
+  text-transform: uppercase;
+  background: rgba(188, 144, 97, 0.13);
+  border: 1px solid rgba(188, 144, 97, 0.28);
 }
 
 .section,
@@ -1152,9 +1228,12 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .profile-stats div:nth-child(3),
-  .profile-stats div:nth-child(4),
-  .profile-stats div:nth-child(5) {
+  .achievement-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card,
+  .stat-card.is-coverage {
     grid-column: span 1;
   }
 
@@ -1290,7 +1369,8 @@ a {
 
   .service-grid,
   .offering-cards,
-  .profile-stats {
+  .profile-stats,
+  .achievement-list {
     grid-template-columns: 1fr;
   }
 
@@ -1335,12 +1415,13 @@ a {
     font-size: 19px;
   }
 
-  .profile-stats div,
+  .stat-card,
   .achievement-list article {
     padding: 22px;
   }
 
-  .profile-stats div {
+  .stat-card,
+  .stat-card.is-coverage {
     min-height: 138px;
   }
 
@@ -1349,7 +1430,7 @@ a {
     gap: 6px;
   }
 
-  .profile-stats strong {
+  .stat-card strong {
     font-size: 34px;
   }
 

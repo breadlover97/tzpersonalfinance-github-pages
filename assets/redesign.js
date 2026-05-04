@@ -53,25 +53,34 @@ function pulseTab(link) {
 }
 
 function setupSectionTabs() {
-  if (!tabLinks.length || !("IntersectionObserver" in window)) return;
+  if (!tabLinks.length) return;
   const sections = tabLinks
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
+    .map((link) => ({
+      link,
+      section: document.querySelector(link.getAttribute("href")),
+    }))
+    .filter((item) => item.section);
+  let ticking = false;
+  let hashLockUntil = 0;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible?.target?.id) activateTab(visible.target.id);
-    },
-    {
-      rootMargin: "-35% 0px -52% 0px",
-      threshold: [0.08, 0.2, 0.45],
-    },
-  );
+  const updateFromScroll = () => {
+    if (Date.now() < hashLockUntil) {
+      ticking = false;
+      return;
+    }
+    const marker = window.scrollY + Number.parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-height"), 10) + Number.parseInt(getComputedStyle(document.documentElement).getPropertyValue("--tabs-height"), 10) + 48;
+    const active = sections.reduce((current, item) => {
+      return item.section.offsetTop <= marker ? item : current;
+    }, sections[0]);
+    if (active?.section?.id) activateTab(active.section.id);
+    ticking = false;
+  };
 
-  sections.forEach((section) => observer.observe(section));
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(updateFromScroll);
+  };
 
   tabLinks.forEach((link) => {
     link.addEventListener("click", () => pulseTab(link));
@@ -80,10 +89,19 @@ function setupSectionTabs() {
   const syncHashTab = () => {
     const id = window.location.hash.slice(1);
     if (id && tabLinks.some((link) => link.getAttribute("href") === `#${id}`)) {
+      hashLockUntil = Date.now() + 520;
       activateTab(id);
+      window.setTimeout(() => activateTab(id), 240);
     }
   };
   syncHashTab();
+  if (window.location.hash) {
+    window.setTimeout(requestUpdate, 560);
+  } else {
+    requestUpdate();
+  }
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
   window.addEventListener("hashchange", syncHashTab);
 }
 
@@ -131,16 +149,44 @@ function setupBackToTop() {
   window.addEventListener("scroll", update, { passive: true });
 }
 
+function getStatType(label = "") {
+  if (label.startsWith("Sum assured")) return "coverage";
+  if (label.startsWith("Claims")) return "claims";
+  return "relationship";
+}
+
+function getStatKicker(label = "") {
+  if (label.startsWith("Sum assured")) return "Protection value";
+  if (label.includes("policies")) return "Policies";
+  if (label.startsWith("Claims")) return "Claims";
+  return "Client base";
+}
+
 function renderProfileStats(stats = []) {
   const container = document.querySelector("[data-aia-stats]");
   if (!container || !stats.length) return;
-  const nodes = stats.map((item) => {
-    const stat = document.createElement("div");
+  const sortOrder = [
+    "Total clients",
+    "Total policies",
+    "Claims approved",
+    "Claims value",
+    "Sum assured (Death)",
+    "Sum assured (Total permanent disability)",
+    "Sum assured (Critical illness)",
+  ];
+  const orderedStats = [...stats].sort(
+    (a, b) => sortOrder.indexOf(a.label) - sortOrder.indexOf(b.label),
+  );
+  const nodes = orderedStats.map((item) => {
+    const stat = document.createElement("article");
+    const kicker = document.createElement("em");
     const value = document.createElement("strong");
     const label = document.createElement("span");
+    stat.className = `stat-card is-${getStatType(item.label)}`;
+    kicker.textContent = getStatKicker(item.label);
     value.textContent = item.value;
     label.textContent = item.label;
-    stat.append(value, label);
+    stat.append(kicker, value, label);
     return stat;
   });
   container.replaceChildren(...nodes);
