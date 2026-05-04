@@ -1,30 +1,4 @@
-const navToggle = document.querySelector("[data-nav-toggle]");
-const navMenu = document.querySelector("[data-nav-menu]");
-
-function closeMenu() {
-  if (!navToggle || !navMenu) return;
-  document.body.classList.remove("nav-open");
-  navMenu.classList.remove("is-open");
-  navToggle.setAttribute("aria-expanded", "false");
-}
-
-if (navToggle && navMenu) {
-  navToggle.addEventListener("click", () => {
-    const isOpen = navMenu.classList.toggle("is-open");
-    document.body.classList.toggle("nav-open", isOpen);
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  navMenu.addEventListener("click", (event) => {
-    if (event.target instanceof HTMLAnchorElement) {
-      closeMenu();
-    }
-  });
-}
-
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 980) closeMenu();
-});
+const tabLinks = Array.from(document.querySelectorAll("[data-tab-link]"));
 
 function setText(selector, value) {
   if (!value) return;
@@ -44,6 +18,38 @@ function formatSyncDate(value) {
   })}`;
 }
 
+function activateTab(id) {
+  tabLinks.forEach((link) => {
+    const isActive = link.getAttribute("href") === `#${id}`;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) {
+      link.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  });
+}
+
+function setupSectionTabs() {
+  if (!tabLinks.length || !("IntersectionObserver" in window)) return;
+  const sections = tabLinks
+    .map((link) => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target?.id) activateTab(visible.target.id);
+    },
+    {
+      rootMargin: "-35% 0px -52% 0px",
+      threshold: [0.08, 0.2, 0.45],
+    },
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
 async function hydrateAiaProfile() {
   try {
     const response = await fetch("data/aia-profile.json", { cache: "no-store" });
@@ -51,9 +57,7 @@ async function hydrateAiaProfile() {
     const profile = await response.json();
     setText("[data-aia-name]", profile.name);
     setText("[data-aia-role]", profile.role);
-    setText("[data-aia-rep]", profile.masRepNo);
     setText("[data-aia-badges]", profile.badges?.join(", "));
-    setText("[data-aia-about]", profile.about);
     setText("[data-aia-synced]", formatSyncDate(profile.syncedAt));
 
     if (profile.email) {
@@ -70,4 +74,5 @@ async function hydrateAiaProfile() {
   }
 }
 
+setupSectionTabs();
 hydrateAiaProfile();

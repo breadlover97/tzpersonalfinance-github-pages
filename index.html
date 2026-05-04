@@ -10,6 +10,9 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="assets/mirror/framerusercontent.com/images/7gYDsqdzxhE9u6Rc389NluDOKk.scale-down-to-1024.png">
     <meta name="theme-color" content="#08182f">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/redesign.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-VYE7EDQP5F"></script>
     <script>
@@ -31,19 +34,21 @@
             <small>Personal Finance</small>
           </span>
         </a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-menu" data-nav-toggle>
-          <span></span>
-          <span></span>
-          <span class="sr-only">Menu</span>
-        </button>
-        <div class="nav-links" id="primary-menu" data-nav-menu>
-          <a href="#services">Services</a>
-          <a href="#method">Method</a>
-          <a href="#profile">AIA Profile</a>
-          <a href="#contact">Contact</a>
-        </div>
+        <a class="header-cta" href="#contact">Contact</a>
       </nav>
     </header>
+
+    <nav class="section-tabs" aria-label="Page sections">
+      <div class="tab-inner">
+        <a class="tab-link is-active" href="#top" data-tab-link>Start</a>
+        <a class="tab-link" href="#services" data-tab-link>Expertise</a>
+        <a class="tab-link" href="#products" data-tab-link>Offerings</a>
+        <a class="tab-link" href="#method" data-tab-link>Method</a>
+        <a class="tab-link" href="#testimonials" data-tab-link>Stories</a>
+        <a class="tab-link" href="#profile" data-tab-link>AIA Profile</a>
+        <a class="tab-link" href="#contact" data-tab-link>Contact</a>
+      </div>
+    </nav>
 
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
@@ -71,16 +76,16 @@
 
       <section class="trust-band" aria-label="Profile highlights">
         <div>
-          <span>Representative</span>
-          <strong data-aia-rep>NTZ300093279</strong>
-        </div>
-        <div>
           <span>Recognition</span>
           <strong data-aia-badges>MDRT</strong>
         </div>
         <div>
           <span>Affiliation</span>
           <strong>AIA Financial Advisers</strong>
+        </div>
+        <div>
+          <span>Focus</span>
+          <strong>Goal-based planning</strong>
         </div>
         <div>
           <span>Profile sync</span>
@@ -98,10 +103,10 @@
         </div>
       </section>
 
-      <section class="section services-section" id="services" aria-labelledby="services-title">
+      <section class="section services-section scroll-section" id="services" aria-labelledby="services-title">
         <div class="section-heading">
-          <p class="eyebrow">Services</p>
-          <h2 id="services-title">Planning support for the decisions that matter.</h2>
+          <p class="eyebrow">Areas of expertise</p>
+          <h2 id="services-title">Where I help clients create clarity.</h2>
         </div>
         <div class="service-grid">
           <article>
@@ -127,7 +132,40 @@
         </div>
       </section>
 
-      <section class="method-section" id="method" aria-labelledby="method-title">
+      <section class="section product-section scroll-section" id="products" aria-labelledby="products-title">
+        <div class="section-heading">
+          <p class="eyebrow">Product offerings</p>
+          <h2 id="products-title">Tools selected only after the plan is clear.</h2>
+        </div>
+        <div class="product-grid">
+          <article>
+            <h3>Financial health review</h3>
+            <p>A structured check-in across goals, cash flow, coverage, commitments and existing arrangements.</p>
+          </article>
+          <article>
+            <h3>Insurance solutions</h3>
+            <p>Life, critical illness, accident, health and disability planning for personal and family protection.</p>
+          </article>
+          <article>
+            <h3>Investment and savings</h3>
+            <p>Solutions for disciplined accumulation, goal funding and portfolio planning over different time horizons.</p>
+          </article>
+          <article>
+            <h3>Retirement income</h3>
+            <p>Planning around future income needs, drawdown timing and the lifestyle you want your assets to support.</p>
+          </article>
+          <article>
+            <h3>Estate and legacy</h3>
+            <p>Practical planning for beneficiaries, liquidity, ownership and long-term family continuity.</p>
+          </article>
+          <article>
+            <h3>Mortgage protection</h3>
+            <p>Coverage and planning considerations around property commitments and household resilience.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="method-section scroll-section" id="method" aria-labelledby="method-title">
         <div class="method-heading">
           <p class="eyebrow">Method</p>
           <h2 id="method-title">A simple rhythm for better financial decisions.</h2>
@@ -152,7 +190,28 @@
         </ol>
       </section>
 
-      <section class="section profile-section" id="profile" aria-labelledby="profile-title">
+      <section class="section testimonial-section scroll-section" id="testimonials" aria-labelledby="testimonials-title">
+        <div class="section-heading">
+          <p class="eyebrow">Client stories</p>
+          <h2 id="testimonials-title">A planning experience that feels practical, clear and personal.</h2>
+        </div>
+        <div class="testimonial-grid">
+          <figure>
+            <blockquote>“He took time to understand our habits, needs and wants before recommending what made sense.”</blockquote>
+            <figcaption>Xue Qi and Wei Ren</figcaption>
+          </figure>
+          <figure>
+            <blockquote>“He gives comprehensive comparisons and explains how each plan matches up with my goals.”</blockquote>
+            <figcaption>Kai Yang</figcaption>
+          </figure>
+          <figure>
+            <blockquote>“His advice is analytical, clear and actionable, while still being easy to understand.”</blockquote>
+            <figcaption>Cyrus and Merjorie</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section profile-section scroll-section" id="profile" aria-labelledby="profile-title">
         <div class="profile-panel">
           <div>
             <p class="eyebrow">AIA profile</p>
@@ -172,10 +231,6 @@
                 <dd data-aia-role>Financial Consultant</dd>
               </div>
               <div>
-                <dt>MAS Rep No.</dt>
-                <dd data-aia-rep>NTZ300093279</dd>
-              </div>
-              <div>
                 <dt>Email</dt>
                 <dd><a href="mailto:taizhi.ngim@aiafa.com.sg" data-aia-email>taizhi.ngim@aiafa.com.sg</a></dd>
               </div>
@@ -184,14 +239,14 @@
         </div>
         <article class="about-card">
           <h3>About me</h3>
-          <p data-aia-about>
-            I focus on helping individuals and families make confident, informed decisions across insurance solutions, investment planning, retirement readiness and estate distribution strategies.
+          <p>
+            I work best with clients who want to be thoughtful with money, but do not want financial planning to feel overwhelming. My role is to give structure to the conversation, explain trade-offs clearly, and help you move forward with decisions that fit your life.
           </p>
           <a href="https://www.aia.com.sg/en/agent-profile?cd=011&q=xc30d040903027e3aa989713403fb74d23d01ea5ded1381c48278f7943a4037b4d7827c48d038cf7a2e228e761c1370c6a0d27c20cdddf482da065c3886e3b2bc9e1ad74a409c158d772cff60ab97&utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank" rel="noopener">View official AIA profile</a>
         </article>
       </section>
 
-      <section class="contact-section" id="contact" aria-labelledby="contact-title">
+      <section class="contact-section scroll-section" id="contact" aria-labelledby="contact-title">
         <div>
           <p class="eyebrow">Contact</p>
           <h2 id="contact-title">Let’s make your next financial step clearer.</h2>
