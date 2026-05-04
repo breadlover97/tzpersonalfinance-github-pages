@@ -432,9 +432,7 @@ a {
 }
 
 .profile-proof-card {
-  background: var(--white);
-  border: 1px solid var(--line);
-  box-shadow: 0 18px 58px rgba(8, 24, 47, 0.07);
+  background: transparent;
 }
 
 .profile-data dl {
@@ -478,37 +476,67 @@ a {
 
 .profile-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  background: var(--white);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .profile-stats div {
-  min-height: 146px;
-  padding: 28px;
+  position: relative;
+  min-height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 26px;
   background: var(--white);
-  border-left: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 46px rgba(8, 24, 47, 0.06);
+  overflow: hidden;
+}
+
+.profile-stats div::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gold);
+}
+
+.profile-stats div:nth-child(3),
+.profile-stats div:nth-child(4),
+.profile-stats div:nth-child(5) {
+  grid-column: span 2;
+}
+
+.profile-stats div:nth-child(3)::before,
+.profile-stats div:nth-child(4)::before,
+.profile-stats div:nth-child(5)::before {
+  background: #1d6fd8;
 }
 
 .profile-stats strong {
   display: block;
   color: #1d6fd8;
-  font-size: clamp(30px, 4vw, 48px);
+  font-size: clamp(32px, 4.8vw, 58px);
   line-height: 1;
 }
 
 .profile-stats span {
   display: block;
-  margin-top: 20px;
+  margin-top: 28px;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 15px;
+  font-weight: 750;
   line-height: 1.08;
+  text-transform: uppercase;
 }
 
 .achievement-list {
   display: grid;
   background: var(--white);
-  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  border: 1px solid var(--line);
 }
 
 .achievement-list article {
@@ -853,20 +881,11 @@ a {
   overflow-y: visible;
   overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(188, 144, 97, 0.7) rgba(8, 24, 47, 0.08);
+  scrollbar-width: none;
 }
 
 .testimonial-carousel::-webkit-scrollbar {
-  height: 8px;
-}
-
-.testimonial-carousel::-webkit-scrollbar-track {
-  background: rgba(8, 24, 47, 0.08);
-}
-
-.testimonial-carousel::-webkit-scrollbar-thumb {
-  background: rgba(188, 144, 97, 0.7);
+  display: none;
 }
 
 .testimonial-carousel::before,
@@ -894,13 +913,12 @@ a {
   width: max-content;
   display: flex;
   gap: 18px;
-  padding-bottom: 12px;
   animation: testimonialScroll 42s linear infinite;
 }
 
 .testimonial-card {
-  flex: 0 0 min(580px, calc(100vw - 64px));
-  min-height: 420px;
+  flex: 0 0 min(680px, calc(100vw - 64px));
+  min-height: 500px;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -1134,6 +1152,12 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .profile-stats div:nth-child(3),
+  .profile-stats div:nth-child(4),
+  .profile-stats div:nth-child(5) {
+    grid-column: span 1;
+  }
+
   .method-heading {
     position: static;
   }
@@ -1314,6 +1338,10 @@ a {
   .profile-stats div,
   .achievement-list article {
     padding: 22px;
+  }
+
+  .profile-stats div {
+    min-height: 138px;
   }
 
   .profile-data div {
