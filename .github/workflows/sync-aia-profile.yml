@@ -1,0 +1,42 @@
+name: Sync AIA profile
+
+on:
+  schedule:
+    - cron: "15 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.52.0
+          npx playwright install --with-deps chromium
+
+      - name: Sync profile data
+        run: node scripts/sync-aia-profile.mjs
+
+      - name: Commit profile update
+        run: |
+          if git diff --quiet -- data/aia-profile.json; then
+            echo "AIA profile data unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/aia-profile.json
+          git commit -m "Sync AIA profile data"
+          git push
