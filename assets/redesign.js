@@ -1,4 +1,19 @@
 const tabLinks = Array.from(document.querySelectorAll("[data-tab-link]"));
+const revealTargets = [
+  ".hero-copy",
+  ".hero-card",
+  ".trust-band > *",
+  ".section-heading",
+  ".intro-copy",
+  ".service-grid > *",
+  ".offering-card",
+  ".method-heading",
+  ".method-list > *",
+  ".testimonial-grid > *",
+  ".profile-panel",
+  ".about-card",
+  ".contact-section > *",
+].join(",");
 
 function setText(selector, value) {
   if (!value) return;
@@ -50,6 +65,44 @@ function setupSectionTabs() {
   sections.forEach((section) => observer.observe(section));
 }
 
+function setupRevealMotion() {
+  const targets = Array.from(document.querySelectorAll(revealTargets));
+  targets.forEach((target, index) => {
+    target.classList.add("reveal");
+    target.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 55}ms`);
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    targets.forEach((target) => target.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "0px 0px -12% 0px", threshold: 0.14 },
+  );
+
+  targets.forEach((target) => observer.observe(target));
+}
+
+function setupOfferingDropdowns() {
+  document.querySelectorAll(".offering-card").forEach((card) => {
+    const trigger = card.querySelector(".offering-trigger");
+    if (!trigger) return;
+    trigger.addEventListener("click", () => {
+      const isOpen = card.classList.toggle("is-open");
+      trigger.setAttribute("aria-expanded", String(isOpen));
+    });
+  });
+}
+
 async function hydrateAiaProfile() {
   try {
     const response = await fetch("data/aia-profile.json", { cache: "no-store" });
@@ -75,4 +128,6 @@ async function hydrateAiaProfile() {
 }
 
 setupSectionTabs();
+setupRevealMotion();
+setupOfferingDropdowns();
 hydrateAiaProfile();

@@ -187,7 +187,7 @@ a {
   font-weight: 850;
   text-transform: uppercase;
   white-space: nowrap;
-  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .tab-link:hover,
@@ -196,6 +196,7 @@ a {
   color: var(--blue);
   background: var(--white);
   border-color: var(--gold);
+  transform: translateY(-1px);
 }
 
 .hero {
@@ -390,6 +391,18 @@ a {
   scroll-margin-top: calc(var(--header-height) + var(--tabs-height) + 28px);
 }
 
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 620ms ease, transform 620ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .section {
   padding: 112px 0;
 }
@@ -430,16 +443,14 @@ a {
   margin-bottom: 40px;
 }
 
-.service-grid,
-.product-grid {
+.service-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
 
-.service-grid article,
-.product-grid article {
+.service-grid article {
   min-height: 320px;
   padding: 28px;
   border-right: 1px solid var(--line);
@@ -469,24 +480,108 @@ a {
   border-top: 1px solid var(--line);
 }
 
-.product-grid {
+.offering-cards {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
 
-.product-grid article {
-  min-height: 230px;
+.offering-card {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 54px rgba(8, 24, 47, 0.08);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
-.product-grid h3 {
-  margin: 0 0 22px;
+.offering-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(188, 144, 97, 0.55);
+  box-shadow: 0 24px 70px rgba(8, 24, 47, 0.12);
+}
+
+.offering-trigger {
+  width: 100%;
+  min-height: 138px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  color: var(--white);
+  background:
+    linear-gradient(135deg, rgba(8, 24, 47, 0.94), rgba(16, 41, 74, 0.86)),
+    linear-gradient(90deg, rgba(188, 144, 97, 0.18) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(188, 144, 97, 0.18) 1px, transparent 1px);
+  background-size: auto, 32px 32px, 32px 32px;
+  border: 0;
+  font: inherit;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 750;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+}
+
+.offering-trigger small {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.chevron {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-top: 3px solid var(--gold);
+  border-left: 3px solid var(--gold);
+  transform: rotate(45deg) translateY(4px);
+  transition: transform 220ms ease;
+}
+
+.offering-card:not(.is-open) .chevron {
+  transform: rotate(225deg) translateY(-4px);
+}
+
+.offering-content {
+  display: grid;
+  gap: 28px;
+  max-height: 760px;
+  padding: 26px 28px 30px;
+  background: #efe2d2;
+  overflow: hidden;
+  transition: max-height 260ms ease, padding 260ms ease;
+}
+
+.offering-card:not(.is-open) .offering-content {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.offering-content div {
+  padding-left: 18px;
+  border-left: 6px solid rgba(188, 144, 97, 0.38);
+}
+
+.offering-content h3 {
+  margin: 0 0 8px;
   color: var(--blue);
   font-size: 22px;
   line-height: 1.12;
 }
 
-.product-grid p {
+.offering-content ul {
   margin: 0;
+  padding-left: 18px;
   color: var(--muted);
+}
+
+.offering-content li + li {
+  margin-top: 5px;
 }
 
 .method-section {
@@ -738,7 +833,7 @@ a {
 
   .trust-band,
   .service-grid,
-  .product-grid,
+  .offering-cards,
   .testimonial-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -750,6 +845,66 @@ a {
   .contact-actions {
     justify-content: flex-start;
     max-width: none;
+  }
+}
+
+@media (max-width: 820px), (orientation: portrait) and (max-width: 980px) {
+  .horizontal-scroll {
+    display: flex;
+    gap: 14px;
+    width: 100vw;
+    margin-left: calc((100vw - 100%) / -2);
+    padding: 0 16px 14px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-scroll > * {
+    flex: 0 0 min(86vw, 380px);
+    scroll-snap-align: center;
+  }
+
+  .trust-band.horizontal-scroll,
+  .service-grid.horizontal-scroll,
+  .method-list.horizontal-scroll {
+    border: 0;
+  }
+
+  .trust-band.horizontal-scroll > div,
+  .service-grid.horizontal-scroll article,
+  .method-list.horizontal-scroll li {
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .offering-cards.horizontal-scroll > * {
+    flex-basis: min(90vw, 430px);
+  }
+
+  .method-list.horizontal-scroll li {
+    min-height: 260px;
+    display: block;
+    padding: 24px;
+  }
+
+  .method-list.horizontal-scroll li::before {
+    display: block;
+    margin-bottom: 58px;
+  }
+
+  .method-list.horizontal-scroll p {
+    margin-top: 12px;
+  }
+
+  .testimonial-grid.horizontal-scroll figure {
+    min-height: 360px;
   }
 }
 
@@ -819,9 +974,13 @@ a {
 
   .trust-band,
   .service-grid,
-  .product-grid,
+  .offering-cards,
   .testimonial-grid {
     grid-template-columns: 1fr;
+  }
+
+  .service-grid.horizontal-scroll article {
+    min-height: 300px;
   }
 
   .section,
@@ -869,5 +1028,24 @@ a {
 
   .footer-top p {
     text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

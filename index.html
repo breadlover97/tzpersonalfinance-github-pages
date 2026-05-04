@@ -41,19 +41,19 @@
     <nav class="section-tabs" aria-label="Page sections">
       <div class="tab-inner">
         <a class="tab-link is-active" href="#top" data-tab-link>Start</a>
-        <a class="tab-link" href="#services" data-tab-link>Expertise</a>
-        <a class="tab-link" href="#products" data-tab-link>Offerings</a>
-        <a class="tab-link" href="#method" data-tab-link>Method</a>
-        <a class="tab-link" href="#testimonials" data-tab-link>Stories</a>
-        <a class="tab-link" href="#profile" data-tab-link>AIA Profile</a>
-        <a class="tab-link" href="#contact" data-tab-link>Contact</a>
+        <a class="tab-link" href="#services" data-tab-link>How I Help</a>
+        <a class="tab-link" href="#products" data-tab-link>Solutions</a>
+        <a class="tab-link" href="#method" data-tab-link>Process</a>
+        <a class="tab-link" href="#testimonials" data-tab-link>Client Notes</a>
+        <a class="tab-link" href="#profile" data-tab-link>Profile</a>
+        <a class="tab-link" href="#contact" data-tab-link>Talk</a>
       </div>
     </nav>
 
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">Personal finance, made clearer</p>
+          <p class="eyebrow">Start here</p>
           <h1 id="hero-title">Build a financial plan you can actually understand and use.</h1>
           <p class="hero-lede">
             I help individuals and families organise protection, investments, retirement and legacy decisions into a practical plan that fits real life.
@@ -74,7 +74,7 @@
         </aside>
       </section>
 
-      <section class="trust-band" aria-label="Profile highlights">
+      <section class="trust-band horizontal-scroll" aria-label="Profile highlights">
         <div>
           <span>Recognition</span>
           <strong data-aia-badges>MDRT</strong>
@@ -94,7 +94,7 @@
       </section>
 
       <section class="section intro-section">
-        <div class="section-label">My approach</div>
+        <div class="section-label">Why it matters</div>
         <div class="intro-copy">
           <h2>Advice should feel calm, structured and easy to follow.</h2>
           <p>
@@ -105,10 +105,10 @@
 
       <section class="section services-section scroll-section" id="services" aria-labelledby="services-title">
         <div class="section-heading">
-          <p class="eyebrow">Areas of expertise</p>
+          <p class="eyebrow">How I help</p>
           <h2 id="services-title">Where I help clients create clarity.</h2>
         </div>
-        <div class="service-grid">
+        <div class="service-grid horizontal-scroll">
           <article>
             <span>01</span>
             <h3>Protection planning</h3>
@@ -134,43 +134,92 @@
 
       <section class="section product-section scroll-section" id="products" aria-labelledby="products-title">
         <div class="section-heading">
-          <p class="eyebrow">Product offerings</p>
-          <h2 id="products-title">Tools selected only after the plan is clear.</h2>
+          <p class="eyebrow">Solutions</p>
+          <h2 id="products-title">Product options grouped around real planning needs.</h2>
         </div>
-        <div class="product-grid">
-          <article>
-            <h3>Financial health review</h3>
-            <p>A structured check-in across goals, cash flow, coverage, commitments and existing arrangements.</p>
+        <div class="offering-cards horizontal-scroll" data-offerings>
+          <article class="offering-card is-open">
+            <button class="offering-trigger" type="button" aria-expanded="true">
+              <span>
+                <small>Personal</small>
+                For individuals and families
+              </span>
+              <span class="chevron" aria-hidden="true"></span>
+            </button>
+            <div class="offering-content">
+              <div>
+                <h3>Protection</h3>
+                <ul>
+                  <li>Life insurance</li>
+                  <li>Critical illness insurance</li>
+                  <li>Accident and health insurance</li>
+                  <li>Disability insurance</li>
+                  <li>Travel insurance</li>
+                </ul>
+              </div>
+              <div>
+                <h3>Savings and investments</h3>
+                <ul>
+                  <li>Investment-linked plans</li>
+                  <li>Savings and endowment plans</li>
+                  <li>Retirement payout plans</li>
+                  <li>Legacy plans</li>
+                </ul>
+              </div>
+            </div>
           </article>
-          <article>
-            <h3>Insurance solutions</h3>
-            <p>Life, critical illness, accident, health and disability planning for personal and family protection.</p>
+          <article class="offering-card is-open">
+            <button class="offering-trigger" type="button" aria-expanded="true">
+              <span>
+                <small>Employee</small>
+                For teams and staff benefits
+              </span>
+              <span class="chevron" aria-hidden="true"></span>
+            </button>
+            <div class="offering-content">
+              <div>
+                <h3>Group benefits</h3>
+                <ul>
+                  <li>Group life insurance</li>
+                  <li>Group critical illness insurance</li>
+                  <li>Group accident and health insurance</li>
+                  <li>Group outpatient GP coverage</li>
+                  <li>Group dental insurance</li>
+                  <li>Group foreign worker insurance</li>
+                  <li>Group business travel insurance</li>
+                </ul>
+              </div>
+            </div>
           </article>
-          <article>
-            <h3>Investment and savings</h3>
-            <p>Solutions for disciplined accumulation, goal funding and portfolio planning over different time horizons.</p>
-          </article>
-          <article>
-            <h3>Retirement income</h3>
-            <p>Planning around future income needs, drawdown timing and the lifestyle you want your assets to support.</p>
-          </article>
-          <article>
-            <h3>Estate and legacy</h3>
-            <p>Practical planning for beneficiaries, liquidity, ownership and long-term family continuity.</p>
-          </article>
-          <article>
-            <h3>Mortgage protection</h3>
-            <p>Coverage and planning considerations around property commitments and household resilience.</p>
+          <article class="offering-card is-open">
+            <button class="offering-trigger" type="button" aria-expanded="true">
+              <span>
+                <small>Commercial</small>
+                For business protection
+              </span>
+              <span class="chevron" aria-hidden="true"></span>
+            </button>
+            <div class="offering-content">
+              <div>
+                <h3>Business coverage</h3>
+                <ul>
+                  <li>Property insurance</li>
+                  <li>Liability insurance</li>
+                  <li>Motor insurance</li>
+                  <li>Construction insurance</li>
+                </ul>
+              </div>
+            </div>
           </article>
         </div>
       </section>
 
       <section class="method-section scroll-section" id="method" aria-labelledby="method-title">
         <div class="method-heading">
-          <p class="eyebrow">Method</p>
-          <h2 id="method-title">A simple rhythm for better financial decisions.</h2>
+          <p class="eyebrow">How we work</p>
+          <h2 id="method-title">A simple rhythm for decisions you can stand behind.</h2>
         </div>
-        <ol class="method-list">
+        <ol class="method-list horizontal-scroll">
           <li>
             <span>Discover</span>
             <p>Understand your goals, commitments, family context and current arrangements.</p>
@@ -192,10 +241,10 @@
 
       <section class="section testimonial-section scroll-section" id="testimonials" aria-labelledby="testimonials-title">
         <div class="section-heading">
-          <p class="eyebrow">Client stories</p>
+          <p class="eyebrow">What clients value</p>
           <h2 id="testimonials-title">A planning experience that feels practical, clear and personal.</h2>
         </div>
-        <div class="testimonial-grid">
+        <div class="testimonial-grid horizontal-scroll">
           <figure>
             <blockquote>“He took time to understand our habits, needs and wants before recommending what made sense.”</blockquote>
             <figcaption>Xue Qi and Wei Ren</figcaption>
@@ -214,7 +263,7 @@
       <section class="section profile-section scroll-section" id="profile" aria-labelledby="profile-title">
         <div class="profile-panel">
           <div>
-            <p class="eyebrow">AIA profile</p>
+            <p class="eyebrow">Verified details</p>
             <h2 id="profile-title">Public profile details, refreshed daily.</h2>
             <p class="profile-note">
               This section reads from a small local data file that is refreshed from my official AIA profile by GitHub Actions.
@@ -248,7 +297,7 @@
 
       <section class="contact-section scroll-section" id="contact" aria-labelledby="contact-title">
         <div>
-          <p class="eyebrow">Contact</p>
+          <p class="eyebrow">Next step</p>
           <h2 id="contact-title">Let’s make your next financial step clearer.</h2>
           <p>
             Tell me what you are trying to solve, what feels uncertain and what you would like your money to support. We can start from there.
