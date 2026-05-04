@@ -29,7 +29,6 @@ body {
     linear-gradient(90deg, rgba(8, 24, 47, 0.06) 1px, transparent 1px),
     var(--white);
   background-size: 32px 32px;
-  animation: gridDrift 22s linear infinite;
   font-family: "Inter Tight", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.55;
   text-rendering: optimizeLegibility;
@@ -257,15 +256,6 @@ a {
   pointer-events: none;
 }
 
-@keyframes gridDrift {
-  from {
-    background-position: 0 0, 0 0, 0 0;
-  }
-  to {
-    background-position: 32px 32px, 32px 32px, 0 0;
-  }
-}
-
 @keyframes tabRailSweep {
   from {
     opacity: 0;
@@ -396,7 +386,6 @@ a {
     linear-gradient(180deg, rgba(8, 24, 47, 0.06) 1px, transparent 1px),
     var(--soft);
   background-size: 40px 40px;
-  animation: portraitGrid 18s linear infinite;
 }
 
 .portrait-frame img {
@@ -1155,15 +1144,6 @@ a {
   }
 }
 
-@keyframes portraitGrid {
-  from {
-    background-position: 0 0, 0 0, 0 0;
-  }
-  to {
-    background-position: 40px 0, 0 40px, 0 0;
-  }
-}
-
 @keyframes flowSweep {
   0%,
   18% {
@@ -1722,11 +1702,6 @@ a {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  body,
-  .portrait-frame {
-    animation: none;
   }
 
   *,
