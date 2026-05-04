@@ -8,11 +8,12 @@ const revealTargets = [
   ".service-grid > *",
   ".offering-card",
   ".method-heading",
-  ".method-list > *",
+  ".process-card",
   ".testimonial-grid > *",
   ".profile-panel",
   ".about-card",
 ].join(",");
+const backToTop = document.querySelector(".back-to-top");
 
 function setText(selector, value) {
   if (!value) return;
@@ -113,6 +114,15 @@ function setupOfferingDropdowns() {
   });
 }
 
+function setupBackToTop() {
+  if (!backToTop) return;
+  const update = () => {
+    backToTop.classList.toggle("is-visible", window.scrollY > 520);
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+}
+
 async function hydrateAiaProfile() {
   try {
     const response = await fetch("data/aia-profile.json", { cache: "no-store" });
@@ -140,4 +150,5 @@ async function hydrateAiaProfile() {
 setupSectionTabs();
 setupRevealMotion();
 setupOfferingDropdowns();
+setupBackToTop();
 hydrateAiaProfile();

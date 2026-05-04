@@ -32,7 +32,6 @@ body {
   font-family: "Inter Tight", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.55;
   text-rendering: optimizeLegibility;
-  padding-bottom: 112px;
 }
 
 body.nav-open {
@@ -659,39 +658,80 @@ a {
   align-self: start;
 }
 
-.method-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: method;
-}
-
-.method-list li {
+.process-display {
   position: relative;
   display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 28px;
-  padding: 30px 0;
-  border-top: 1px solid var(--line);
-  counter-increment: method;
+  gap: 14px;
+  padding: 10px 0;
 }
 
-.method-list li::before {
-  content: counter(method, decimal-leading-zero);
+.process-display::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 22px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--gold), rgba(188, 144, 97, 0.08));
+}
+
+.process-card {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 24px 26px 24px 76px;
+  background:
+    linear-gradient(90deg, rgba(188, 144, 97, 0.1), transparent 48%),
+    rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 46px rgba(8, 24, 47, 0.06);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.process-card::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  left: 14px;
+  width: 17px;
+  height: 17px;
+  background: var(--white);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 8px rgba(188, 144, 97, 0.12);
+}
+
+.process-card::after {
+  content: "";
+  position: absolute;
+  top: 34px;
+  left: 41px;
+  width: 22px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.process-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(188, 144, 97, 0.62);
+  box-shadow: 0 22px 60px rgba(8, 24, 47, 0.1);
+}
+
+.process-card span {
   color: var(--gold-2);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 850;
+  text-transform: uppercase;
 }
 
-.method-list span {
+.process-card h3 {
+  margin: 0;
   color: var(--blue);
-  font-size: 22px;
-  font-weight: 850;
+  font-size: clamp(21px, 2.3vw, 30px);
+  line-height: 1.05;
 }
 
-.method-list p {
-  grid-column: 2;
-  margin: -14px 0 0;
+.process-card p {
+  margin: 0;
   color: var(--muted);
 }
 
@@ -801,87 +841,37 @@ a {
   font-size: 18px;
 }
 
-.sticky-cta {
+.back-to-top {
   position: fixed;
-  left: 50%;
-  bottom: 16px;
+  right: 22px;
+  bottom: 22px;
   z-index: 18;
-  width: min(var(--max), calc(100% - 32px));
+  width: 46px;
+  height: 46px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 22px;
-  align-items: center;
-  padding: 14px 16px 14px 18px;
+  place-items: center;
   color: var(--white);
-  background:
-    linear-gradient(90deg, rgba(188, 144, 97, 0.18), transparent 38%),
-    rgba(8, 24, 47, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 22px 70px rgba(8, 24, 47, 0.28);
-  transform: translateX(-50%);
-  backdrop-filter: blur(18px);
-  animation: ctaLift 520ms ease both;
+  background: var(--blue);
+  border: 1px solid rgba(188, 144, 97, 0.58);
+  box-shadow: 0 16px 46px rgba(8, 24, 47, 0.2);
+  font-size: 22px;
+  font-weight: 850;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 180ms ease, transform 180ms ease, background 180ms ease;
 }
 
-.sticky-cta .eyebrow {
-  margin-bottom: 4px;
-  color: var(--gold);
+.back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
-.sticky-cta h2 {
-  margin: 0;
-  color: var(--white);
-  font-size: clamp(18px, 2vw, 25px);
-  line-height: 1.08;
-}
-
-.sticky-cta p {
-  margin: 5px 0 0;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 14px;
-}
-
-.sticky-cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.sticky-cta .button {
-  min-width: 120px;
-  min-height: 42px;
-  padding: 11px 14px;
-}
-
-.sticky-cta .button-primary {
-  color: var(--blue);
+.back-to-top:hover,
+.back-to-top:focus-visible {
   background: var(--gold);
-  border-color: var(--gold);
-}
-
-.sticky-cta .button-secondary {
-  color: var(--white);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.sticky-cta .button-secondary:hover,
-.sticky-cta .button-secondary:focus-visible {
-  color: var(--blue);
-  background: var(--white);
-  border-color: var(--white);
-}
-
-@keyframes ctaLift {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 18px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
 }
 
 .site-footer {
@@ -943,8 +933,7 @@ a {
   .intro-section,
   .section-heading,
   .method-section,
-  .profile-panel,
-  .sticky-cta {
+  .profile-panel {
     grid-template-columns: 1fr;
   }
 
@@ -972,9 +961,6 @@ a {
     position: static;
   }
 
-  .sticky-cta-actions {
-    justify-content: flex-start;
-  }
 }
 
 @media (max-width: 820px), (orientation: portrait) and (max-width: 980px) {
@@ -1026,14 +1012,12 @@ a {
     padding: 82px 0;
   }
 
-  .method-list li {
-    grid-template-columns: 76px 1fr;
-    gap: 16px;
-    padding: 22px 0;
+  .process-card {
+    padding: 22px 22px 22px 70px;
   }
 
-  .method-list p {
-    margin-top: -8px;
+  .process-card h3 {
+    font-size: 24px;
   }
 
   .testimonial-grid figure {
@@ -1164,40 +1148,34 @@ a {
     font-size: 22px;
   }
 
-  .method-list li,
+  .process-card,
   .profile-data div {
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .method-list p {
-    grid-column: auto;
-    margin-top: 0;
+  .process-card {
+    padding: 20px 18px 20px 58px;
   }
 
-  .sticky-cta {
-    bottom: 10px;
-    width: calc(100% - 20px);
-    gap: 0;
-    padding: 10px;
+  .process-display::before {
+    left: 18px;
   }
 
-  .sticky-cta-copy {
-    display: none;
+  .process-card::before {
+    left: 10px;
   }
 
-  .sticky-cta-actions {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+  .process-card::after {
+    left: 36px;
+    width: 14px;
   }
 
-  .sticky-cta .button {
-    min-width: 0;
-    min-height: 38px;
-    width: 100%;
-    padding: 9px 8px;
-    font-size: 11px;
+  .back-to-top {
+    right: 14px;
+    bottom: 14px;
+    width: 42px;
+    height: 42px;
   }
 
   .profile-panel,
