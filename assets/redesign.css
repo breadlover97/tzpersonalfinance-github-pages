@@ -1044,28 +1044,28 @@ a {
 
 .process-check {
   position: absolute;
-  top: 25px;
-  left: 13px;
+  top: 23px;
+  left: 11px;
   z-index: 1;
-  width: 21px;
-  height: 21px;
+  width: 25px;
+  height: 25px;
   display: grid;
   place-items: center;
   background: var(--white);
   border: 2px solid var(--gold);
-  box-shadow: 0 0 0 7px rgba(188, 144, 97, 0.1);
+  box-shadow: 0 0 0 7px rgba(188, 144, 97, 0.12);
   overflow: hidden;
   transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
 .process-check::before {
   content: "";
-  width: 6px;
-  height: 11px;
-  border-right: 2px solid var(--white);
-  border-bottom: 2px solid var(--white);
+  width: 8px;
+  height: 14px;
+  border-right: 3px solid var(--white);
+  border-bottom: 3px solid var(--white);
   opacity: 0;
-  transform: translateY(-1px) rotate(45deg) scale(0.45);
+  transform: translateY(-2px) rotate(45deg) scale(0.28);
   transform-origin: center;
 }
 
@@ -1078,22 +1078,25 @@ a {
 .process-card.reveal.is-visible .process-check {
   background: var(--gold);
   border-color: var(--gold);
+  box-shadow: 0 0 0 8px rgba(188, 144, 97, 0.18), 0 0 0 18px rgba(188, 144, 97, 0.06);
+  animation: checkPop 520ms ease both;
 }
 
 .process-card.reveal.is-visible .process-check::before {
   opacity: 1;
-  animation: checkDraw 360ms ease both;
+  animation: checkDraw 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .process-card.is-current .process-check {
   background: #1d6fd8;
   border-color: #1d6fd8;
-  box-shadow: 0 0 0 8px rgba(29, 111, 216, 0.12), 0 0 0 16px rgba(29, 111, 216, 0.05);
+  box-shadow: 0 0 0 9px rgba(29, 111, 216, 0.16), 0 0 0 22px rgba(29, 111, 216, 0.06);
+  animation: checkPop 520ms ease both;
 }
 
 .process-card.is-current .process-check::before {
   opacity: 1;
-  animation: checkDraw 360ms ease both;
+  animation: checkDraw 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .process-card > span:not(.process-check) {
@@ -1245,15 +1248,31 @@ a {
 @keyframes checkDraw {
   0% {
     opacity: 0;
-    transform: translateY(-1px) rotate(45deg) scale(0.35);
+    transform: translateY(-2px) rotate(45deg) scale(0.2);
   }
-  72% {
+  42% {
     opacity: 1;
-    transform: translateY(-1px) rotate(45deg) scale(1.12);
+    transform: translateY(-2px) rotate(45deg) scale(1.26);
+  }
+  74% {
+    opacity: 1;
+    transform: translateY(-2px) rotate(45deg) scale(0.92);
   }
   100% {
     opacity: 1;
-    transform: translateY(-1px) rotate(45deg) scale(1);
+    transform: translateY(-2px) rotate(45deg) scale(1);
+  }
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0.72);
+  }
+  58% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
