@@ -95,8 +95,9 @@ def collect_relative_imports(text):
 
 def download(url, target):
     target.parent.mkdir(parents=True, exist_ok=True)
-    if target.exists() and target.stat().st_size > 0:
+    if target.exists() and target.stat().st_size > 0 and not is_text_asset(target):
         return "cached"
+    existed = target.exists()
 
     request = Request(
         url,
@@ -107,7 +108,7 @@ def download(url, target):
     )
     with urlopen(request, timeout=45) as response:
         target.write_bytes(response.read())
-    return "downloaded"
+    return "refreshed" if existed else "downloaded"
 
 
 def mirror_all(seed_html):
@@ -157,17 +158,11 @@ def rewrite_text_file(path, url_to_target):
     original = text
 
     for url, target in sorted(url_to_target.items(), key=lambda item: len(item[0]), reverse=True):
-        rel = Path(os_path_rel(target, path.parent)).as_posix()
+        rel = target.relative_to(ROOT).as_posix()
         text = text.replace(url, quote(rel, safe="/._-"))
 
     if text != original:
         path.write_text(text, encoding="utf-8")
-
-
-def os_path_rel(target, start):
-    import os
-
-    return os.path.relpath(target, start)
 
 
 def rewrite_all_text(url_to_target):
