@@ -507,17 +507,6 @@ a {
   background: var(--gold);
 }
 
-.stat-card::after {
-  content: counter(stat, decimal-leading-zero);
-  position: absolute;
-  right: 22px;
-  bottom: 16px;
-  color: rgba(8, 24, 47, 0.05);
-  font-size: 72px;
-  font-weight: 850;
-  line-height: 1;
-}
-
 .stat-card.is-coverage {
   grid-column: span 4;
   min-height: 210px;
@@ -599,18 +588,6 @@ a {
   inset: 0 auto 0 0;
   width: 4px;
   background: var(--gold);
-}
-
-.achievement-list article::after {
-  content: "Award";
-  position: absolute;
-  right: 20px;
-  top: 18px;
-  color: rgba(8, 24, 47, 0.06);
-  font-size: 28px;
-  font-weight: 850;
-  line-height: 1;
-  text-transform: uppercase;
 }
 
 .achievement-list h3 {
