@@ -2,14 +2,13 @@ const tabLinks = Array.from(document.querySelectorAll("[data-tab-link]"));
 const revealTargets = [
   ".hero-copy",
   ".hero-card",
-  ".trust-band > *",
+  ".profile-proof-card",
   ".section-heading",
-  ".intro-copy",
   ".service-grid > *",
   ".offering-card",
   ".method-heading",
   ".process-card",
-  ".testimonial-grid > *",
+  ".testimonial-card",
   ".profile-panel",
   ".about-card",
 ].join(",");
@@ -77,6 +76,15 @@ function setupSectionTabs() {
   tabLinks.forEach((link) => {
     link.addEventListener("click", () => pulseTab(link));
   });
+
+  const syncHashTab = () => {
+    const id = window.location.hash.slice(1);
+    if (id && tabLinks.some((link) => link.getAttribute("href") === `#${id}`)) {
+      activateTab(id);
+    }
+  };
+  syncHashTab();
+  window.addEventListener("hashchange", syncHashTab);
 }
 
 function setupRevealMotion() {
@@ -97,7 +105,7 @@ function setupRevealMotion() {
         entry.target.classList.toggle("is-visible", entry.isIntersecting);
       });
     },
-    { rootMargin: "0px 0px -12% 0px", threshold: 0.14 },
+    { rootMargin: "-8% 0px -8% 0px", threshold: 0.01 },
   );
 
   targets.forEach((target) => observer.observe(target));
@@ -123,6 +131,43 @@ function setupBackToTop() {
   window.addEventListener("scroll", update, { passive: true });
 }
 
+function renderProfileStats(stats = []) {
+  const container = document.querySelector("[data-aia-stats]");
+  if (!container || !stats.length) return;
+  const nodes = stats.map((item) => {
+    const stat = document.createElement("div");
+    const value = document.createElement("strong");
+    const label = document.createElement("span");
+    value.textContent = item.value;
+    label.textContent = item.label;
+    stat.append(value, label);
+    return stat;
+  });
+  container.replaceChildren(...nodes);
+}
+
+function renderAchievements(achievements = []) {
+  const container = document.querySelector("[data-aia-achievements]");
+  if (!container || !achievements.length) return;
+  const nodes = achievements.map((item) => {
+    const article = document.createElement("article");
+    const copy = document.createElement("div");
+    const name = document.createElement("h3");
+    const achieved = document.createElement("p");
+    name.textContent = item.name;
+    achieved.textContent = item.lastAchieved ?? "";
+    copy.append(name, achieved);
+    article.append(copy);
+    if (item.frequency) {
+      const frequency = document.createElement("span");
+      frequency.textContent = item.frequency;
+      article.append(frequency);
+    }
+    return article;
+  });
+  container.replaceChildren(...nodes);
+}
+
 async function hydrateAiaProfile() {
   try {
     const response = await fetch("data/aia-profile.json", { cache: "no-store" });
@@ -130,8 +175,11 @@ async function hydrateAiaProfile() {
     const profile = await response.json();
     setText("[data-aia-name]", profile.name);
     setText("[data-aia-role]", profile.role);
-    setText("[data-aia-badges]", profile.badges?.join(", "));
+    setText("[data-aia-organisation]", profile.organisation);
+    setText("[data-aia-fsc]", profile.fscCode);
     setText("[data-aia-synced]", formatSyncDate(profile.syncedAt));
+    renderProfileStats(profile.stats);
+    renderAchievements(profile.achievements);
 
     if (profile.email) {
       document.querySelectorAll("[data-aia-email]").forEach((node) => {

@@ -3,10 +3,68 @@
   "syncedAt": "2026-05-04T06:30:00.000Z",
   "name": "Tai Zhi",
   "role": "Financial Consultant",
+  "organisation": "PEARLYN-AWM KOH POO KWEE ORG",
   "masRepNo": "NTZ300093279",
+  "fscCode": "24206",
   "email": "taizhi.ngim@aiafa.com.sg",
+  "phone": "97721028",
   "badges": [
     "MDRT"
+  ],
+  "stats": [
+    {
+      "value": "197",
+      "label": "Total clients"
+    },
+    {
+      "value": "436",
+      "label": "Total policies"
+    },
+    {
+      "value": "SGD 47.0 m",
+      "label": "Sum assured (Death)"
+    },
+    {
+      "value": "SGD 45.1 m",
+      "label": "Sum assured (Total permanent disability)"
+    },
+    {
+      "value": "SGD 53.2 m",
+      "label": "Sum assured (Critical illness)"
+    },
+    {
+      "value": "320",
+      "label": "Claims approved"
+    },
+    {
+      "value": "SGD 430.4 k",
+      "label": "Claims value"
+    }
+  ],
+  "achievements": [
+    {
+      "name": "MDRT",
+      "lastAchieved": "Last achieved in 2026",
+      "frequency": "4-time achiever"
+    },
+    {
+      "name": "PRESTIGE TITANIUM",
+      "lastAchieved": "Last achieved in 2026",
+      "frequency": "3-time achiever"
+    },
+    {
+      "name": "CAREER AGENT BENEFIT",
+      "lastAchieved": "Last achieved in 2025",
+      "frequency": "2-time achiever"
+    },
+    {
+      "name": "CENTURION",
+      "lastAchieved": "Last achieved in 2025"
+    },
+    {
+      "name": "CONVENTION",
+      "lastAchieved": "Last achieved in 2025"
+    }
   ],
   "about": "I focus on helping individuals and families make confident, informed decisions across all aspects of financial planning. My areas of expertise include insurance solutions, investment planning, retirement readiness, and estate distribution strategies. I primarily work with working professionals in the fields of technology, finance, and healthcare, offering them structured and personalised advice that aligns with their career trajectory, lifestyle goals, and long-term wealth aspirations. Clients work with me because I offer more than just products. I deliver clarity through structured, goal-based financial frameworks that help them save both time and money. Whether you're navigating life transitions, securing your child's education, or building long-term wealth, I provide tailored strategies grounded in real-life application and deep technical understanding."
 }

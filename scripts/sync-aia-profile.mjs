@@ -16,6 +16,24 @@ function normaliseWhitespace(value) {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function extractStat(text, label) {
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`([^ ](?:.*?)) ${escaped}(?= \\d| SGD | Achievements|$)`, "i");
+  return normaliseWhitespace(text.match(pattern)?.[1] ?? "");
+}
+
+function extractAchievement(text, name) {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`${escaped} (Last achieved in \\d{4})(?: (\\d+-time achiever))?`, "i");
+  const match = text.match(pattern);
+  if (!match) return null;
+  return {
+    name,
+    lastAchieved: match[1],
+    ...(match[2] ? { frequency: match[2] } : {}),
+  };
+}
+
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 
@@ -27,18 +45,47 @@ try {
 
   const email = cleanedText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] ?? "taizhi.ngim@aiafa.com.sg";
   const masRepNo = cleanedText.match(/NTZ\d+/i)?.[0]?.toUpperCase() ?? "NTZ300093279";
+  const fscCode = cleanedText.match(/FSC code\s+(\d+)/i)?.[1] ?? "24206";
+  const phone = cleanedText.match(/phone\s+"?(\d{8})"?/i)?.[1] ?? "97721028";
+  const organisation = cleanedText.match(/Financial Consultant\s+(.+?)\s+Rep No\./i)?.[1] ?? "PEARLYN-AWM KOH POO KWEE ORG";
   const aboutRaw = extractBetween(cleanedText, "About me", "MDRT");
   const role = cleanedText.includes("Financial Consultant") ? "Financial Consultant" : "AIAFA Financial Services Consultant";
   const badges = cleanedText.includes("MDRT") ? ["MDRT"] : [];
+  const statLabels = [
+    "Total clients",
+    "Total policies",
+    "Sum assured (Death)",
+    "Sum assured (Total permanent disability)",
+    "Sum assured (Critical illness)",
+    "Claims approved",
+    "Claims value",
+  ];
+  const stats = statLabels
+    .map((label) => ({ value: extractStat(cleanedText, label), label }))
+    .filter((item) => item.value);
+  const achievements = [
+    "MDRT",
+    "PRESTIGE TITANIUM",
+    "CAREER AGENT BENEFIT",
+    "CENTURION",
+    "CONVENTION",
+  ]
+    .map((name) => extractAchievement(cleanedText, name))
+    .filter(Boolean);
 
   const profile = {
     sourceUrl,
     syncedAt: new Date().toISOString(),
     name: "Tai Zhi",
     role,
+    organisation,
     masRepNo,
+    fscCode,
     email,
+    phone,
     badges,
+    stats,
+    achievements,
     about: normaliseWhitespace(aboutRaw || fallbackAbout).replace(/ Schedule your consultation with me now!?$/i, ""),
   };
 
