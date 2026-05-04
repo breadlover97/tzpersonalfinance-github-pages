@@ -1,4 +1,5 @@
 const tabLinks = Array.from(document.querySelectorAll("[data-tab-link]"));
+const tabRail = document.querySelector(".tab-inner");
 const revealTargets = [
   ".hero-copy",
   ".hero-card",
@@ -13,6 +14,7 @@ const revealTargets = [
   ".about-card",
 ].join(",");
 const backToTop = document.querySelector(".back-to-top");
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function setText(selector, value) {
   if (!value) return;
@@ -42,6 +44,7 @@ function activateTab(id) {
       link.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     }
   });
+  updateTabIndicator();
 }
 
 function pulseTab(link) {
@@ -52,8 +55,25 @@ function pulseTab(link) {
   });
 }
 
+function updateTabIndicator() {
+  if (!tabRail) return;
+  const active = tabRail.querySelector(".tab-link.is-active");
+  const indicator = tabRail.querySelector(".tab-indicator");
+  if (!active || !indicator) return;
+  const inset = 12;
+  tabRail.style.setProperty("--tab-indicator-x", `${active.offsetLeft + inset}px`);
+  tabRail.style.setProperty("--tab-indicator-width", `${Math.max(active.offsetWidth - inset * 2, 18)}px`);
+  tabRail.style.setProperty("--tab-indicator-opacity", "1");
+}
+
 function setupSectionTabs() {
   if (!tabLinks.length) return;
+  if (tabRail && !tabRail.querySelector(".tab-indicator")) {
+    const indicator = document.createElement("span");
+    indicator.className = "tab-indicator";
+    indicator.setAttribute("aria-hidden", "true");
+    tabRail.append(indicator);
+  }
   const sections = tabLinks
     .map((link) => ({
       link,
@@ -101,8 +121,13 @@ function setupSectionTabs() {
     requestUpdate();
   }
   window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate);
+  window.addEventListener("resize", () => {
+    requestUpdate();
+    updateTabIndicator();
+  });
+  tabRail?.addEventListener("scroll", updateTabIndicator, { passive: true });
   window.addEventListener("hashchange", syncHashTab);
+  updateTabIndicator();
 }
 
 function setupRevealMotion() {
@@ -149,6 +174,107 @@ function setupBackToTop() {
   window.addEventListener("scroll", update, { passive: true });
 }
 
+function parseMetricValue(text) {
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return null;
+  const rawNumber = match[0];
+  return {
+    prefix: text.slice(0, match.index),
+    number: Number(rawNumber),
+    suffix: text.slice(match.index + rawNumber.length),
+    decimals: rawNumber.includes(".") ? rawNumber.split(".")[1].length : 0,
+    final: text,
+  };
+}
+
+function formatMetricValue(metric, value) {
+  const formatted = value.toLocaleString("en-SG", {
+    minimumFractionDigits: metric.decimals,
+    maximumFractionDigits: metric.decimals,
+  });
+  return `${metric.prefix}${formatted}${metric.suffix}`;
+}
+
+function animateMetricValue(node, metric) {
+  if (node.dataset.counted === "true") return;
+  node.dataset.counted = "true";
+
+  if (prefersReducedMotion.matches) {
+    node.textContent = metric.final;
+    return;
+  }
+
+  const duration = 920;
+  const start = performance.now();
+  const easeOut = (progress) => 1 - Math.pow(1 - progress, 3);
+  const tick = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    node.textContent = formatMetricValue(metric, metric.number * easeOut(progress));
+    if (progress < 1) {
+      window.requestAnimationFrame(tick);
+    } else {
+      node.textContent = metric.final;
+    }
+  };
+  node.textContent = formatMetricValue(metric, 0);
+  window.requestAnimationFrame(tick);
+}
+
+function setupStatCounters(root = document) {
+  const values = Array.from(root.querySelectorAll(".stat-card strong"));
+  if (!values.length) return;
+  values.forEach((node) => {
+    const finalText = node.dataset.countFinal || node.textContent.trim();
+    const metric = parseMetricValue(finalText);
+    node.dataset.countFinal = finalText;
+    if (!metric) return;
+    node.textContent = finalText;
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    values.forEach((node) => {
+      const metric = parseMetricValue(node.dataset.countFinal || node.textContent.trim());
+      if (metric) animateMetricValue(node, metric);
+    });
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const metric = parseMetricValue(entry.target.dataset.countFinal || entry.target.textContent.trim());
+        if (metric) animateMetricValue(entry.target, metric);
+        observer.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.34 },
+  );
+
+  values.forEach((node) => observer.observe(node));
+}
+
+function setupProcessMotion() {
+  const cards = Array.from(document.querySelectorAll(".process-card"));
+  if (!cards.length) return;
+
+  if (!("IntersectionObserver" in window) || prefersReducedMotion.matches) {
+    cards[0].classList.add("is-current");
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("is-current", entry.isIntersecting && entry.intersectionRatio > 0.56);
+      });
+    },
+    { rootMargin: "-18% 0px -22% 0px", threshold: [0.2, 0.56, 0.82] },
+  );
+
+  cards.forEach((card) => observer.observe(card));
+}
+
 function getStatType(label = "") {
   if (label.startsWith("Sum assured")) return "coverage";
   if (label.startsWith("Claims")) return "claims";
@@ -190,6 +316,7 @@ function renderProfileStats(stats = []) {
     return stat;
   });
   container.replaceChildren(...nodes);
+  setupStatCounters(container);
 }
 
 function renderAchievements(achievements = []) {
@@ -243,4 +370,6 @@ setupSectionTabs();
 setupRevealMotion();
 setupOfferingDropdowns();
 setupBackToTop();
+setupStatCounters();
+setupProcessMotion();
 hydrateAiaProfile();
