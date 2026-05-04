@@ -138,12 +138,7 @@ function setupRevealMotion() {
   });
 
   if (!("IntersectionObserver" in window)) {
-    targets.forEach((target) => {
-      target.classList.add("is-visible");
-      if (target.classList.contains("process-card")) {
-        target.classList.add("is-checked");
-      }
-    });
+    targets.forEach((target) => target.classList.add("is-visible"));
     return;
   }
 
@@ -151,9 +146,6 @@ function setupRevealMotion() {
     (entries) => {
       entries.forEach((entry) => {
         entry.target.classList.toggle("is-visible", entry.isIntersecting);
-        if (entry.isIntersecting && entry.target.classList.contains("process-card")) {
-          entry.target.classList.add("is-checked");
-        }
       });
     },
     { rootMargin: "-8% 0px -8% 0px", threshold: 0.01 },
@@ -279,24 +271,118 @@ function setupStatCounters(root = document) {
 function setupProcessMotion() {
   const cards = Array.from(document.querySelectorAll(".process-card"));
   if (!cards.length) return;
-  cards[0].classList.add("is-current");
 
-  if (!("IntersectionObserver" in window) || prefersReducedMotion.matches) {
-    return;
+  const getScrollTop = () =>
+    window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+
+  let previousY = getScrollTop();
+  const previousTops = new WeakMap();
+  let lastInputDirection = "none";
+  let lastTouchY = null;
+  let ticking = false;
+
+  const update = () => {
+    const currentY = getScrollTop();
+    let direction = currentY > previousY ? "down" : currentY < previousY ? "up" : "none";
+    const downMarker = window.innerHeight * 0.68;
+    const upMarker = window.innerHeight * 0.5;
+    const viewportCenter = window.innerHeight * 0.5;
+    let activeCard = cards[0];
+    let activeDistance = Number.POSITIVE_INFINITY;
+
+    if (direction === "none") {
+      const previousTop = previousTops.get(cards[0]);
+      const currentTop = cards[0].getBoundingClientRect().top;
+      if (typeof previousTop === "number") {
+        if (currentTop < previousTop) direction = "down";
+        if (currentTop > previousTop) direction = "up";
+      }
+    }
+
+    if (direction === "none") {
+      direction = lastInputDirection;
+    }
+
+    cards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.top + rect.height * 0.5;
+      const distance = Math.abs(cardCenter - viewportCenter);
+
+      if (direction === "down" && rect.top <= downMarker) {
+        card.classList.add("is-checked");
+      }
+
+      if (direction === "up" && rect.top >= upMarker) {
+        card.classList.remove("is-checked");
+      }
+
+      if (distance < activeDistance) {
+        activeDistance = distance;
+        activeCard = card;
+      }
+
+      previousTops.set(card, rect.top);
+    });
+
+    cards.forEach((card) => card.classList.toggle("is-current", card === activeCard));
+    previousY = currentY;
+    ticking = false;
+  };
+
+  const requestUpdate = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(update);
+  };
+
+  const setInputDirection = (direction) => {
+    lastInputDirection = direction;
+    window.requestAnimationFrame(requestUpdate);
+  };
+
+  const handleWheel = (event) => {
+    if (event.deltaY > 0) setInputDirection("down");
+    if (event.deltaY < 0) setInputDirection("up");
+  };
+
+  const handleTouchStart = (event) => {
+    lastTouchY = event.touches?.[0]?.clientY ?? null;
+  };
+
+  const handleTouchMove = (event) => {
+    const touchY = event.touches?.[0]?.clientY ?? null;
+    if (typeof touchY !== "number" || typeof lastTouchY !== "number") return;
+    if (touchY < lastTouchY) setInputDirection("down");
+    if (touchY > lastTouchY) setInputDirection("up");
+    lastTouchY = touchY;
+  };
+
+  const handleKeyDown = (event) => {
+    const downKeys = ["ArrowDown", "PageDown", "End", " "];
+    const upKeys = ["ArrowUp", "PageUp", "Home"];
+    if (downKeys.includes(event.key)) setInputDirection("down");
+    if (upKeys.includes(event.key)) setInputDirection("up");
+  };
+
+  update();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  document.addEventListener("scroll", requestUpdate, { passive: true });
+  document.scrollingElement?.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("wheel", handleWheel, { passive: true });
+  window.addEventListener("touchstart", handleTouchStart, { passive: true });
+  window.addEventListener("touchmove", handleTouchMove, { passive: true });
+  window.addEventListener("keydown", handleKeyDown);
+  window.addEventListener("resize", requestUpdate);
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(() => requestUpdate(), {
+      rootMargin: "-4% 0px -4% 0px",
+      threshold: [0, 0.18, 0.42, 0.7, 1],
+    });
+    cards.forEach((card) => observer.observe(card));
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting && entry.intersectionRatio > 0.18)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      cards.forEach((card) => card.classList.toggle("is-current", card === visible.target));
-    },
-    { rootMargin: "-8% 0px -12% 0px", threshold: [0.18, 0.42, 0.7] },
-  );
-
-  cards.forEach((card) => observer.observe(card));
+  window.setTimeout(requestUpdate, 600);
 }
 
 function getStatType(label = "") {
