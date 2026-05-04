@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "index.original.html"
 OUTPUT = ROOT / "index.html"
 ASSET_ROOT = ROOT / "assets" / "mirror"
+MAX_FILENAME_STEM = 96
 
 MIRROR_HOSTS = {
     "framerusercontent.com",
@@ -43,11 +44,16 @@ def asset_path_for(url):
     else:
         query_tag = ""
 
-    if suffix:
-        filename = f"{stem}{query_tag}{suffix}"
-    else:
+    if not suffix:
         guessed = mimetypes.guess_extension(parsed.path) or ".bin"
-        filename = f"{stem}{query_tag}{guessed}"
+        suffix = guessed
+
+    filename_stem = f"{stem}{query_tag}"
+    if len(filename_stem) > MAX_FILENAME_STEM:
+        digest = hashlib.sha1(url.encode("utf-8")).hexdigest()[:12]
+        filename_stem = f"{filename_stem[:MAX_FILENAME_STEM - 13]}.{digest}"
+
+    filename = f"{filename_stem}{suffix}"
 
     return ASSET_ROOT / parent / filename
 
