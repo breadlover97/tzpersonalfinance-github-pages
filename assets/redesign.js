@@ -138,7 +138,12 @@ function setupRevealMotion() {
   });
 
   if (!("IntersectionObserver" in window)) {
-    targets.forEach((target) => target.classList.add("is-visible"));
+    targets.forEach((target) => {
+      target.classList.add("is-visible");
+      if (target.classList.contains("process-card")) {
+        target.classList.add("is-checked");
+      }
+    });
     return;
   }
 
@@ -146,6 +151,9 @@ function setupRevealMotion() {
     (entries) => {
       entries.forEach((entry) => {
         entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        if (entry.isIntersecting && entry.target.classList.contains("process-card")) {
+          entry.target.classList.add("is-checked");
+        }
       });
     },
     { rootMargin: "-8% 0px -8% 0px", threshold: 0.01 },
