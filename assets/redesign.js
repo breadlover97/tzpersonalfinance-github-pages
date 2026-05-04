@@ -12,7 +12,6 @@ const revealTargets = [
   ".testimonial-grid > *",
   ".profile-panel",
   ".about-card",
-  ".contact-section > *",
 ].join(",");
 
 function setText(selector, value) {
@@ -36,10 +35,20 @@ function formatSyncDate(value) {
 function activateTab(id) {
   tabLinks.forEach((link) => {
     const isActive = link.getAttribute("href") === `#${id}`;
+    const wasActive = link.classList.contains("is-active");
     link.classList.toggle("is-active", isActive);
     if (isActive) {
+      if (!wasActive) pulseTab(link);
       link.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     }
+  });
+}
+
+function pulseTab(link) {
+  link.classList.remove("is-activating");
+  window.requestAnimationFrame(() => {
+    link.classList.add("is-activating");
+    window.setTimeout(() => link.classList.remove("is-activating"), 380);
   });
 }
 
@@ -63,6 +72,10 @@ function setupSectionTabs() {
   );
 
   sections.forEach((section) => observer.observe(section));
+
+  tabLinks.forEach((link) => {
+    link.addEventListener("click", () => pulseTab(link));
+  });
 }
 
 function setupRevealMotion() {
@@ -80,10 +93,7 @@ function setupRevealMotion() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
+        entry.target.classList.toggle("is-visible", entry.isIntersecting);
       });
     },
     { rootMargin: "0px 0px -12% 0px", threshold: 0.14 },
