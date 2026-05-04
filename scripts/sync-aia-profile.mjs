@@ -36,8 +36,8 @@ function extractAchievement(text, name) {
 
 async function openProfilePage() {
   const attempts = [
-    { label: "default", args: [] },
-    { label: "http1-fallback", args: ["--disable-http2"] },
+    { label: "default", args: [], waitUntil: "domcontentloaded", gotoTimeout: 45000 },
+    { label: "http1-fallback", args: ["--disable-http2"], waitUntil: "commit", gotoTimeout: 20000 },
   ];
   let lastError;
 
@@ -51,8 +51,13 @@ async function openProfilePage() {
     await page.setExtraHTTPHeaders({ "accept-language": "en-SG,en;q=0.9" });
 
     try {
-      await page.goto(sourceUrl, { waitUntil: "domcontentloaded", timeout: 45000 });
-      await page.getByText("Tai Zhi", { exact: true }).waitFor({ state: "visible", timeout: 45000 });
+      try {
+        await page.goto(sourceUrl, { waitUntil: attempt.waitUntil, timeout: attempt.gotoTimeout });
+      } catch (error) {
+        lastError = error;
+        console.warn(`AIA profile navigation warning on ${attempt.label}: ${error.message}`);
+      }
+      await page.getByText("Tai Zhi", { exact: true }).waitFor({ state: "visible", timeout: 30000 });
       return { browser, page };
     } catch (error) {
       lastError = error;
@@ -64,7 +69,15 @@ async function openProfilePage() {
   throw lastError;
 }
 
-const { browser, page } = await openProfilePage();
+let browser;
+let page;
+
+try {
+  ({ browser, page } = await openProfilePage());
+} catch (error) {
+  console.warn(`Unable to load AIA profile; leaving existing data unchanged. ${error.message}`);
+  process.exit(0);
+}
 
 try {
   const visibleText = await page.locator("body").innerText({ timeout: 10000 });
