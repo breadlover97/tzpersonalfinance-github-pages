@@ -198,6 +198,8 @@ function formatMetricValue(metric, value) {
 function animateMetricValue(node, metric) {
   if (node.dataset.counted === "true") return;
   node.dataset.counted = "true";
+  const run = String((Number(node.dataset.countRun) || 0) + 1);
+  node.dataset.countRun = run;
 
   if (prefersReducedMotion.matches) {
     node.textContent = metric.final;
@@ -208,6 +210,7 @@ function animateMetricValue(node, metric) {
   const start = performance.now();
   const easeOut = (progress) => 1 - Math.pow(1 - progress, 3);
   const tick = (now) => {
+    if (node.dataset.countRun !== run) return;
     const progress = Math.min((now - start) / duration, 1);
     node.textContent = formatMetricValue(metric, metric.number * easeOut(progress));
     if (progress < 1) {
@@ -218,6 +221,14 @@ function animateMetricValue(node, metric) {
   };
   node.textContent = formatMetricValue(metric, 0);
   window.requestAnimationFrame(tick);
+}
+
+function resetMetricValue(node) {
+  const finalText = node.dataset.countFinal || node.textContent.trim();
+  if (!finalText) return;
+  node.dataset.countRun = String((Number(node.dataset.countRun) || 0) + 1);
+  node.dataset.counted = "false";
+  node.textContent = finalText;
 }
 
 function setupStatCounters(root = document) {
@@ -245,7 +256,10 @@ function setupStatCounters(root = document) {
         if (!entry.isIntersecting) return;
         const metric = parseMetricValue(entry.target.dataset.countFinal || entry.target.textContent.trim());
         if (metric) animateMetricValue(entry.target, metric);
-        observer.unobserve(entry.target);
+      });
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) return;
+        resetMetricValue(entry.target);
       });
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.34 },
