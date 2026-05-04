@@ -271,19 +271,21 @@ function setupStatCounters(root = document) {
 function setupProcessMotion() {
   const cards = Array.from(document.querySelectorAll(".process-card"));
   if (!cards.length) return;
+  cards[0].classList.add("is-current");
 
   if (!("IntersectionObserver" in window) || prefersReducedMotion.matches) {
-    cards[0].classList.add("is-current");
     return;
   }
 
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle("is-current", entry.isIntersecting && entry.intersectionRatio > 0.56);
-      });
+      const visible = entries
+        .filter((entry) => entry.isIntersecting && entry.intersectionRatio > 0.18)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      cards.forEach((card) => card.classList.toggle("is-current", card === visible.target));
     },
-    { rootMargin: "-18% 0px -22% 0px", threshold: [0.2, 0.56, 0.82] },
+    { rootMargin: "-8% 0px -12% 0px", threshold: [0.18, 0.42, 0.7] },
   );
 
   cards.forEach((card) => observer.observe(card));

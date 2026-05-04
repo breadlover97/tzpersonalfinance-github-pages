@@ -993,13 +993,14 @@ a {
 .process-card::before {
   content: "";
   position: absolute;
-  top: 26px;
-  left: 14px;
-  width: 17px;
-  height: 17px;
-  background: var(--white);
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 0 8px rgba(188, 144, 97, 0.12);
+  top: 24px;
+  left: 12px;
+  width: 23px;
+  height: 23px;
+  background: rgba(188, 144, 97, 0.1);
+  opacity: 0;
+  transform: scale(0.78);
+  transition: opacity 220ms ease, transform 220ms ease, background 220ms ease;
 }
 
 .process-card::after {
@@ -1010,6 +1011,7 @@ a {
   width: 22px;
   height: 1px;
   background: var(--gold);
+  transition: background 220ms ease, width 220ms ease;
 }
 
 .process-card:hover {
@@ -1024,12 +1026,77 @@ a {
 }
 
 .process-card.is-current::before {
-  border-color: #1d6fd8;
-  box-shadow: 0 0 0 8px rgba(29, 111, 216, 0.12), 0 0 0 16px rgba(29, 111, 216, 0.05);
+  background: rgba(29, 111, 216, 0.1);
+  opacity: 1;
+  transform: scale(1);
   animation: processPulse 1.8s ease-in-out infinite;
 }
 
-.process-card span {
+.process-card:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.process-card.is-current::after {
+  width: 28px;
+  background: #1d6fd8;
+}
+
+.process-check {
+  position: absolute;
+  top: 25px;
+  left: 13px;
+  z-index: 1;
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 0 7px rgba(188, 144, 97, 0.1);
+  overflow: hidden;
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.process-check::before {
+  content: "";
+  width: 6px;
+  height: 11px;
+  border-right: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  opacity: 0;
+  transform: translateY(-1px) rotate(45deg) scale(0.45);
+  transform-origin: center;
+}
+
+.process-card:hover .process-check {
+  transform: translateY(-1px);
+  border-color: var(--gold-2);
+  box-shadow: 0 0 0 8px rgba(188, 144, 97, 0.13);
+}
+
+.process-card.reveal.is-visible .process-check {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.process-card.reveal.is-visible .process-check::before {
+  opacity: 1;
+  animation: checkDraw 360ms ease both;
+}
+
+.process-card.is-current .process-check {
+  background: #1d6fd8;
+  border-color: #1d6fd8;
+  box-shadow: 0 0 0 8px rgba(29, 111, 216, 0.12), 0 0 0 16px rgba(29, 111, 216, 0.05);
+}
+
+.process-card.is-current .process-check::before {
+  opacity: 1;
+  animation: checkDraw 360ms ease both;
+}
+
+.process-card > span:not(.process-check) {
   color: var(--gold-2);
   font-size: 12px;
   font-weight: 850;
@@ -1175,9 +1242,25 @@ a {
   }
 }
 
+@keyframes checkDraw {
+  0% {
+    opacity: 0;
+    transform: translateY(-1px) rotate(45deg) scale(0.35);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(-1px) rotate(45deg) scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-1px) rotate(45deg) scale(1);
+  }
+}
+
 @keyframes processPulse {
   50% {
-    box-shadow: 0 0 0 11px rgba(29, 111, 216, 0.1), 0 0 0 22px rgba(29, 111, 216, 0.03);
+    opacity: 0.78;
+    transform: scale(1.22);
   }
 }
 
